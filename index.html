@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumé Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f2ec; --surface:#fffdf9; --ink:#22201c; --soft:#7a7266;
+  --line:#e6dfd4; --accent:#9c5b3b; --accent-ink:#fff; --accent-soft:#f3e4da;
+  --ok:#2f7d57; --ok-soft:#dff1e7; --warn:#b4471f; --warn-soft:#fbe3d9;
+  --info:#3a5f8f; --info-soft:#e1eaf6; --gold:#8a6a1e; --gold-soft:#f5ecd2;
+  --radius:14px; --shadow:0 1px 2px rgba(40,30,20,.06),0 6px 20px rgba(40,30,20,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151311; --surface:#1e1b18; --ink:#efe9e1; --soft:#a69d91;
+    --line:#332e29; --accent:#d48a63; --accent-ink:#1a1210; --accent-soft:#3a2a21;
+    --ok:#6fcf9a; --ok-soft:#1d3328; --warn:#f08a62; --warn-soft:#3d2219;
+    --info:#8db3e6; --info-soft:#1e2a3a; --gold:#e0c27a; --gold-soft:#352d1a;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.brand{font-family:"Fraunces",serif;font-size:24px;font-weight:600;letter-spacing:-.01em}
+.brand span{color:var(--accent)}
+.brand small{font-family:"Plus Jakarta Sans",sans-serif;font-size:12px;color:var(--soft);font-weight:500;margin-left:8px;letter-spacing:.04em;text-transform:uppercase}
+.role{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--soft)}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.role select{width:auto;padding:6px 10px}
+.banner{background:var(--gold-soft);color:var(--gold);font-size:13px;padding:9px 14px;border-radius:10px;margin:16px 0 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.stat .n{font-family:"Fraunces",serif;font-size:28px;font-weight:600;line-height:1.1;margin-top:4px}
+.stat .l{font-size:12px;color:var(--soft);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.stat.alert .n{color:var(--warn)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.toolbar input{flex:1 1 220px}
+.toolbar select{flex:0 1 160px}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--soft)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.small{padding:5px 10px;font-size:13px;font-weight:500}
+.btn.danger{color:var(--warn)}
+.list{display:grid;gap:10px;padding-bottom:40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:10px 16px}
+.card.stuck{border-left:4px solid var(--warn)}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.id{font-size:12px;color:var(--soft);font-weight:600;letter-spacing:.03em}
+.name{font-weight:700;font-size:16px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.05em;padding:2px 8px;border-radius:99px}
+.tag.EDIT{background:var(--info-soft);color:var(--info)}
+.tag.CETAK{background:var(--accent-soft);color:var(--accent)}
+.tag.stuck{background:var(--warn-soft);color:var(--warn)}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--soft);margin-top:4px}
+.meta b{color:var(--ink);font-weight:600}
+.note{font-size:13px;margin-top:6px;color:var(--soft);font-style:italic}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;min-width:150px}
+.side select{width:150px;font-weight:600}
+.side select.s-Selesai,.side select.s-Dikirim{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.side select.s-Revisi{color:var(--warn);background:var(--warn-soft);border-color:transparent}
+.side select.s-Dikerjakan{color:var(--info);background:var(--info-soft);border-color:transparent}
+.price{font-weight:700}
+.actions{display:flex;gap:6px}
+.empty{text-align:center;color:var(--soft);padding:40px 0}
+dialog{border:none;border-radius:18px;padding:0;width:min(560px,calc(100% - 32px));background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(20,15,10,.45)}
+dialog form{padding:20px}
+dialog h2{font-family:"Fraunces",serif;font-weight:600;margin:0 0 14px;font-size:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid .full{grid-column:1/-1}
+label{display:block;font-size:12px;font-weight:600;color:var(--soft);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+@media (max-width:640px){
+  .card{grid-template-columns:1fr}
+  .side{align-items:stretch;min-width:0}
+  .side select{width:100%}
+  .grid{grid-template-columns:1fr}
+  .brand small{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Lum<span>é</span><small>Order</small></div>
+    <div class="role">
+      Login sebagai
+      <select id="role">
+        <option value="owner">Owner</option>
+        <option value="admin">Admin / CS</option>
+        <option value="editor">Editor</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="banner">Mode tes: data cuma tersimpan di browser ini. Login sungguhan dan database bersama dipasang di tahap berikutnya.</div>
+
+  <section class="stats" id="stats"></section>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Cari nama, nomor WA, atau ID order…">
+    <select id="fJenis">
+      <option value="">Semua jenis</option>
+      <option>EDIT</option>
+      <option>CETAK</option>
+    </select>
+    <select id="fStatus"></select>
+    <button class="btn" id="exportBtn">Export CSV</button>
+    <button class="btn primary" id="addBtn">+ Order baru</button>
+  </div>
+
+  <main class="list" id="list"></main>
+</div>
+
+<dialog id="dlg">
+  <form id="form" method="dialog">
+    <h2 id="dlgTitle">Order baru</h2>
+    <input type="hidden" name="id">
+    <div class="grid">
+      <div class="full"><label>Nama pelanggan</label><input name="nama" required></div>
+      <div><label>No. WhatsApp</label><input name="wa" inputmode="tel"></div>
+      <div><label>Jenis</label>
+        <select name="jenis"><option>EDIT</option><option>CETAK</option></select>
+      </div>
+      <div class="full"><label>Layanan</label>
+        <select name="layanan">
+          <option>Foto keluarga (gabung foto)</option>
+          <option>Restorasi foto lama</option>
+          <option>Edit foto wedding</option>
+          <option>Ganti baju / warna</option>
+          <option>Cetak Foto Block Frame</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+      <div><label>Editor</label>
+        <select name="editor">
+          <option value="">Belum ditentukan</option>
+          <option>Robby</option><option>Yudi</option><option>Willy</option>
+        </select>
+      </div>
+      <div><label>Harga (Rp)</label><input name="harga" type="number" min="0" step="1000"></div>
+      <div><label>Tanggal masuk</label><input name="masuk" type="date" required></div>
+      <div><label>Deadline</label><input name="deadline" type="date"></div>
+      <div class="full"><label>Catatan</label><textarea name="catatan" rows="2"></textarea></div>
+    </div>
+    <div class="foot">
+      <button class="btn" value="cancel" formnovalidate>Batal</button>
+      <button class="btn primary" value="save">Simpan</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const KEY = 'lume_orders_v1';
+const ROLE_KEY = 'lume_role_v1';
+const STATUS = ['Baru', 'Dikerjakan', 'Revisi', 'Selesai', 'Dikirim'];
+const DONE = ['Selesai', 'Dikirim'];
+const NYANGKUT_HARI = 3; // order aktif lebih dari 3 hari = nyangkut
+
+const rupiah = n => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n || 0);
+const today = () => new Date().toISOString().slice(0, 10);
+const shiftDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+const tgl = s => s ? new Date(s + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '–';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function seed() {
+  return [
+    { id: 'LM-0001', nama: 'Contoh: Bu Rina', wa: '0812-0000-0001', jenis: 'EDIT', layanan: 'Foto keluarga (gabung foto)', editor: 'Robby', harga: 150000, masuk: shiftDays(-5), deadline: shiftDays(-1), status: 'Dikerjakan', catatan: '6 orang, background studio' },
+    { id: 'LM-0002', nama: 'Contoh: Pak Dedi', wa: '0813-0000-0002', jenis: 'EDIT', layanan: 'Restorasi foto lama', editor: 'Yudi', harga: 100000, masuk: shiftDays(-1), deadline: shiftDays(2), status: 'Baru', catatan: '' },
+    { id: 'LM-0003', nama: 'Contoh: Mbak Sari', wa: '0857-0000-0003', jenis: 'CETAK', layanan: 'Cetak Foto Block Frame', editor: 'Willy', harga: 225000, masuk: shiftDays(-2), deadline: shiftDays(1), status: 'Selesai', catatan: 'Ukuran 30x40' }
+  ];
+}
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+  return seed();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(orders)); } catch (e) {} }
+
+let orders = load();
+let role = 'owner';
+try { role = localStorage.getItem(ROLE_KEY) || 'owner'; } catch (e) {}
+
+const $ = id => document.getElementById(id);
+$('role').value = role;
+$('fStatus').innerHTML = '<option value="">Semua status</option><option value="__stuck">⚠ Nyangkut</option>' + STATUS.map(s => `<option>${s}</option>`).join('');
+
+function daysSince(d) { return Math.floor((new Date(today()) - new Date(d)) / 86400000); }
+function isStuck(o) {
+  if (DONE.includes(o.status)) return false;
+  return daysSince(o.masuk) > NYANGKUT_HARI || (o.deadline && o.deadline < today());
+}
+function nextId() {
+  const max = orders.reduce((m, o) => Math.max(m, parseInt(String(o.id).replace(/\D/g, '')) || 0), 0);
+  return 'LM-' + String(max + 1).padStart(4, '0');
+}
+
+function renderStats() {
+  const aktif = orders.filter(o => !DONE.includes(o.status)).length;
+  const stuck = orders.filter(isStuck).length;
+  const selesai = orders.filter(o => DONE.includes(o.status)).length;
+  const bulan = today().slice(0, 7);
+  const omzet = orders.filter(o => (o.masuk || '').startsWith(bulan)).reduce((s, o) => s + (+o.harga || 0), 0);
+  let html = `
+    <div class="stat"><div class="l">Total order</div><div class="n">${orders.length}</div></div>
+    <div class="stat"><div class="l">Sedang aktif</div><div class="n">${aktif}</div></div>
+    <div class="stat ${stuck ? 'alert' : ''}"><div class="l">Nyangkut</div><div class="n">${stuck}</div></div>
+    <div class="stat"><div class="l">Selesai</div><div class="n">${selesai}</div></div>`;
+  if (role === 'owner') html += `<div class="stat"><div class="l">Omzet bulan ini</div><div class="n" style="font-size:22px">${rupiah(omzet)}</div></div>`;
+  $('stats').innerHTML = html;
+}
+
+function renderList() {
+  const q = $('q').value.trim().toLowerCase();
+  const fj = $('fJenis').value, fs = $('fStatus').value;
+  const rows = orders
+    .filter(o => !q || [o.nama, o.wa, o.id].some(v => String(v || '').toLowerCase().includes(q)))
+    .filter(o => !fj || o.jenis === fj)
+    .filter(o => !fs || (fs === '__stuck' ? isStuck(o) : o.status === fs))
+    .sort((a, b) => (isStuck(b) - isStuck(a)) || String(b.masuk).localeCompare(String(a.masuk)));
+
+  if (!rows.length) { $('list').innerHTML = '<div class="empty">Belum ada order yang cocok.</div>'; return; }
+
+  const canEdit = role !== 'editor';
+  const showPrice = role !== 'editor';
+  $('list').innerHTML = rows.map(o => {
+    const stuck = isStuck(o);
+    return `
+    <article class="card ${stuck ? 'stuck' : ''}">
+      <div>
+        <div class="top">
+          <span class="id">${esc(o.id)}</span>
+          <span class="name">${esc(o.nama)}</span>
+          <span class="tag ${esc(o.jenis)}">${esc(o.jenis)}</span>
+          ${stuck ? '<span class="tag stuck">NYANGKUT</span>' : ''}
+        </div>
+        <div class="meta">
+          <span>${esc(o.layanan)}</span>
+          <span>Editor: <b>${esc(o.editor || '–')}</b></span>
+          <span>Masuk: <b>${tgl(o.masuk)}</b></span>
+          <span>Deadline: <b>${tgl(o.deadline)}</b></span>
+          ${o.wa ? `<span>WA: <b>${esc(o.wa)}</b></span>` : ''}
+        </div>
+        ${o.catatan ? `<div class="note">${esc(o.catatan)}</div>` : ''}
+      </div>
+      <div class="side">
+        <select class="s-${esc(o.status)}" data-status="${esc(o.id)}">
+          ${STATUS.map(s => `<option ${s === o.status ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+        ${showPrice ? `<div class="price">${rupiah(o.harga)}</div>` : ''}
+        ${canEdit ? `<div class="actions">
+          <button class="btn small" data-edit="${esc(o.id)}">Edit</button>
+          ${role === 'owner' ? `<button class="btn small danger" data-del="${esc(o.id)}">Hapus</button>` : ''}
+        </div>` : ''}
+      </div>
+    </article>`;
+  }).join('');
+}
+
+function render() {
+  $('addBtn').style.display = role === 'editor' ? 'none' : '';
+  $('exportBtn').style.display = role === 'owner' ? '' : 'none';
+  renderStats();
+  renderList();
+}
+
+// Ganti status
+$('list').addEventListener('change', e => {
+  const id = e.target.dataset.status;
+  if (!id) return;
+  const o = orders.find(x => x.id === id);
+  if (o) { o.status = e.target.value; save(); render(); }
+});
+
+// Edit & hapus
+$('list').addEventListener('click', e => {
+  const editId = e.target.dataset.edit, delId = e.target.dataset.del;
+  if (editId) openForm(orders.find(o => o.id === editId));
+  if (delId && confirm('Hapus order ' + delId + '?')) {
+    orders = orders.filter(o => o.id !== delId); save(); render();
+  }
+});
+
+function openForm(o) {
+  const f = $('form');
+  f.reset();
+  $('dlgTitle').textContent = o ? 'Edit order ' + o.id : 'Order baru';
+  const data = o || { masuk: today(), deadline: shiftDays(3) };
+  ['id', 'nama', 'wa', 'jenis', 'layanan', 'editor', 'harga', 'masuk', 'deadline', 'catatan']
+    .forEach(k => { if (f.elements[k]) f.elements[k].value = data[k] ?? ''; });
+  $('dlg').showModal();
+}
+$('addBtn').onclick = () => openForm(null);
+
+$('dlg').addEventListener('close', () => {
+  if ($('dlg').returnValue !== 'save') return;
+  const d = Object.fromEntries(new FormData($('form')));
+  d.harga = +d.harga || 0;
+  if (d.id) {
+    const o = orders.find(x => x.id === d.id);
+    Object.assign(o, d);
+  } else {
+    d.id = nextId();
+    d.status = 'Baru';
+    orders.push(d);
+  }
+  save(); render();
+});
+
+// Filter & role
+['q', 'fJenis', 'fStatus'].forEach(id => $(id).addEventListener('input', renderList));
+$('role').onchange = e => {
+  role = e.target.value;
+  try { localStorage.setItem(ROLE_KEY, role); } catch (err) {}
+  render();
+};
+
+// Export CSV (backup ke laptop)
+$('exportBtn').onclick = () => {
+  const cols = ['id', 'nama', 'wa', 'jenis', 'layanan', 'editor', 'harga', 'masuk', 'deadline', 'status', 'catatan'];
+  const csv = [cols.join(',')].concat(orders.map(o => cols.map(c => '"' + String(o[c] ?? '').replace(/"/g, '""') + '"').join(','))).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+  a.download = 'order-lume-' + today() + '.csv';
+  a.click();
+};
+
+render();
+</script>
+</body>
+</html>
